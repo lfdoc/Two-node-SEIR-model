@@ -1,0 +1,92 @@
+clear;clc;
+
+F = 10000000,
+N = 2000000;                                                                  %人口总数
+O = 8000000;
+E = 0;                                                                      %潜伏者
+I = 1;                                                                      %传染者
+S = N - I;                                                                  %易感者
+R = 0;                                                                      %康复者
+Y = [];
+
+r1 = 0.05;                                                                     %感染者接触易感者的人数
+a = 0.1666;                                                                    %潜伏者转化为感染者概率
+r2 = 0.0625;                                                                    %潜伏者接触易感者的人数
+y = 0.0333;                                                                    %康复概率
+
+B1=0.999995;
+B2=0;
+B3=0.000005;
+B4=0;
+
+c1=B1;
+c2=B2;
+c3=B3;
+c4=B4;
+
+S1 = B1 * O;                                                                     %易感者
+E1 = B2 * O;                                                                     %潜伏者
+I1 = B3 * O;                                                                     %传染者
+R1 = B4 * O;                                                                     %康复者
+
+S = B1 * N;                                                                      %易感者
+E = B2 * N;                                                                      %潜伏者
+I = B3 * N;                                                                      %传染者
+R = B4 * N;                                                                      %康复者
+
+
+for T1 = 1:1:89
+
+    if T1 >= 80
+  
+    N=100000;
+    O=9900000;
+
+    end
+
+
+
+ for idx = 1:1:9
+    
+    S(idx+1) = S(idx) + (B1*N - S(idx))/10 - r1*N*S(idx)*I(idx)/1000000000000 - r1*N*r2*S(idx)*E(idx)/1000000000000;
+    E(idx+1) = E(idx) + (B2*N - E(idx))/10 + r1*N*S(idx)*I(idx)/1000000000000-a*E(idx)/10 + r1*N*r2*S(idx)*E(idx)/1000000000000;
+    I(idx+1) = I(idx) + (B3*N - I(idx))/10 + a*E(idx)/10 - y*I(idx)/10;
+    R(idx+1) = R(idx) + (B4*N - R(idx))/10 + y*I(idx)/10;
+
+    S1(idx+1) = S1(idx) - (B1*N - S(idx))/10;
+    E1(idx+1) = E1(idx) - (B2*N - E(idx))/10 - a*E1(idx)/10;
+    I1(idx+1) = I1(idx) - (B3*N - I(idx))/10 + a*E1(idx)/10 - y*I1(idx)/10;
+    R1(idx+1) = R1(idx) - (B4*N - R(idx))/10 + y*I1(idx)/10;
+    Q(idx+1) =E(idx) + I(idx) + R(idx);
+
+    B1=S1(idx+1)/O;
+    B2=E1(idx+1)/O;
+    B3=I1(idx+1)/O;
+    B4=R1(idx+1)/O;
+
+    C1 = (S1(idx+1)+S(idx+1))/F;
+    C2 = (E1(idx+1)+E(idx+1))/F;
+    C3 = (I1(idx+1)+I(idx+1))/F;
+    C4 = (R1(idx+1)+R(idx+1))/F;
+ 
+ if idx==T4
+    B1 = (S1(idx+1)+S(idx+1))/F;
+    B2 = (E1(idx+1)+E(idx+1))/F;
+    B3 = (I1(idx+1)+I(idx+1))/F;
+    B4 = (R1(idx+1)+R(idx+1))/F;
+
+    S1 = B1 * O;                                                                     %易感者
+    E1 = B2 * O;                                                                     %潜伏者
+    I1 = B3 * O;                                                                     %传染者
+    R1 = B4 * O;                                                                     %康复者
+
+    S = B1 * N;                                                                      %易感者
+    E = B2 * N;                                                                      %潜伏者
+    I = B3 * N;                                                                      %传染者
+    R = B4 * N;                                                                      %康复者
+    end
+
+    end
+U = [N;T1;r1;y;r2;C1;C2;C3;C4];
+Y = [Y U];
+end
