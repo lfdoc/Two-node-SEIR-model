@@ -3,10 +3,10 @@ clear;clc;
 F = 10000000,
 N = 2000000;                                                                  %public density
 O = 8000000;
-E = 0;                                                                      %E
-I = 1;                                                                      %I
-S = N - I;                                                                  %S
-R = 0;                                                                      %R
+E = 0;                                                                        %E
+I = 1;                                                                        %I
+S = N - I;                                                                    %S
+R = 0;                                                                        %R
 Y = [];
 
 r1 = 0.05;                                                                     %zoonotic force
