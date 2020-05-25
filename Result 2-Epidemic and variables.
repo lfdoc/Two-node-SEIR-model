@@ -1,0 +1,56 @@
+clear;clc;
+
+N = 10000;                                                                  %public density
+E = 0;                                                                      %E
+I = 1;                                                                      %I
+S = N - I;                                                                  %S
+R = 0;                                                                      %R
+Y = [];
+
+B1=0.999;
+B2=0;
+B3=0.001;
+B4=0;
+
+for r1=[0.01 0.1 0.2 0.5 1 2 5]                                                 %zoonotic force
+for y=[0.0333 0.05 0.0666 0.1 0.143 0.2 0.333]                                  %recovery or death rate
+for r2=[0.125 0.0625 0.25 0.1875 0.375 0.5]                                     %incubation zoonotic rate
+for a=[0.05 0.0667 0.1 0.166 0.2 0.333]                                         %incubation rate
+
+for N=10000:10000:100000
+
+for T1 = [2 4 6 8 10]
+  B1=0.999;
+  B2=0;
+  B3=0.001;
+  B4=0;
+
+  S = B1 * N;                                                                        %易感者
+  E = B2 * N;                                                                        %潜伏者
+  I = B3 * N;                                                                        %传染者
+  R = B4 * N;                                                                        %康复者
+
+
+  for idx = 1:1:179
+   S(idx+1) = S(idx) + (B1*N - S(idx))/T1 - r1*N*S(idx)*I(idx)/1000000000000 - r1*N*r2*S(idx)*E(idx)/1000000000000;
+   E(idx+1) = E(idx) + (B2*N - E(idx))/T1 + r1*N*S(idx)*I(idx)/1000000000000-a*E(idx)/T1 + r1*N*r2*S(idx)*E(idx)/1000000000000;
+    I(idx+1) = I(idx) + (B3*N - I(idx))/T1 + a*E(idx)/T1 - y*I(idx)/T1;
+    R(idx+1) = R(idx) + (B4*N - R(idx))/T1 + y*I(idx)/T1;
+
+
+    B1 = S(idx+1)/N;
+    B2 = E(idx+1)/N;
+    B3 = I(idx+1)/N;
+    B4 = R(idx+1)/N;
+
+
+  end
+  U=[N;T1;r1;y;r2;a;B1;B2;B3;B4];
+  Y=[Y U];
+
+end
+end
+end
+end
+end
+end
