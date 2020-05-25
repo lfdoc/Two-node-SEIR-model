@@ -1,0 +1,48 @@
+clear;clc;
+
+Y=[];
+
+
+
+r1 = 0.005;                                                                  %zoonotic force
+a = 0.1666;                                                                  %incubation rate
+r2 = 0.125;                                                                  %incubation zoonotic rate
+y = 0.0333;                                                                  %recovery or death rate  
+
+for T3 = 2:1:40 
+T1 = T3;
+T4 = T1 - 1;
+
+T2= 5:1:50
+
+for N=10000:5000:4000000
+
+B1=0.999995
+B2=0
+B3=0.000005
+B4=0
+
+S = B1 * N;                                                                        %易感者
+E = B2 * N;                                                                        %潜伏者
+I = B3 * N;                                                                        %传染者
+R = B4 * N;                                                                        %康复者
+
+  for idx = 1:1:T4
+    S(idx+1) = S(idx) + (B1*N - S(idx))/(T4+1) - r1*N*S(idx)*I(idx)/1000000000000 - r1*N*r2*S(idx)*E(idx)/1000000000000;
+    E(idx+1) = E(idx) + (B2*N - E(idx))/(T4+1) + r1*N*S(idx)*I(idx)/1000000000000-a*E(idx)/(T4+1) + r1*N*r2*S(idx)*E(idx)/1000000000000;
+    I(idx+1) = I(idx) + (B3*N - I(idx))/(T4+1) + a*E(idx)/(T4+1) - y*I(idx)/(T4+1);
+    R(idx+1) = R(idx) + (B4*N - R(idx))/(T4+1) + y*I(idx)/(T4+1);
+
+
+    B1 = S(idx+1)/N;
+    B2 = E(idx+1)/N;
+    B3 = I(idx+1)/N;
+    B4 = R(idx+1)/N;
+
+  U=[N;T1;idx;B1;B2;B3;B4];
+  Y=[Y U];
+
+end
+
+end
+end
