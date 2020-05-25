@@ -1,0 +1,38 @@
+clear;clc;
+
+N = 10000;                                                                  %public density
+E = 0;                                                                      %E
+I = 1;                                                                      %I
+S = N - I;                                                                  %S
+R = 0;                                                                      %R
+
+
+B1=0.999;
+B2=0;
+B3=0.001;
+B4=0;
+
+r1 = 0.000000005;                                                             %zoonotic force
+a = 0.166;                                                                    %incubation rate
+r2 = 0.125;                                                                   %incubation zoonotic force                                                             %潜伏者传染正常人的概率
+y = 0.1;                                                                      %recovery or death rate
+
+T1 = 10
+
+T = 1:180;
+
+  
+  for idx = 1:1:length(T)-1
+    S(idx+1) = S(idx) + (B1*N - S(idx))/T1 - r1*N*S(idx)*I(idx) - r1*N*r2*S(idx)*E(idx);
+    E(idx+1) = E(idx) + (B2*N - E(idx))/T1 + r1*N*S(idx)*I(idx)-a*E(idx) + r1*N*r2*S(idx)*E(idx);
+    I(idx+1) = I(idx) + (B3*N - I(idx))/T1 + a*E(idx) - y*I(idx);
+    R(idx+1) = R(idx) + (B4*N - R(idx))/T1 + y*I(idx);
+    Q(idx+1) =E(idx) + I(idx) + R(idx);
+  end
+  U=[T1,T,S]
+  figure(T1)
+  plot(T,S,T,E,T,I,T,R);
+  hold on
+plot([0 10000])
+xlabel('Cycles');ylabel('Noumbers of people')
+legend('Susceptible','Exposed','Infected','Recovered')
