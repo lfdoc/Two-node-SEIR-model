@@ -1,0 +1,111 @@
+clear;clc;
+
+N = 10000;                                                                    %public density
+O = 100000;
+F=10000000;
+
+
+Q = 0
+Y=[];
+
+a = 0.166;                                                                     %incubation rate
+
+for r1=[0.01 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 1 1.5 2 2.5 3 3.5 4 4.5 5]   %zoonotic force
+for y=[0.0333 0.04 0.05 0.0666 0.1 0.143 0.2 0.333]                                    %recovery or death rate
+for r2=[0.125 0.0625 0.25 0.1875 0.375 0.5]                                            %incubation zoonotic force
+
+for T3 = 2:2:40 
+T1 = T3;
+T4 = T1 - 1;
+
+B5=0.999995;
+B6=0;
+B7=0.000005;
+B8=0;
+
+B1=B5;
+B2=B6;
+B3=B7;
+B4=B8;
+
+T2= 5:1:50;
+
+for N=40000:80000:4040000
+O = F - N;
+B1=B5;
+B2=B6;
+B3=B7;
+B4=B8;
+
+C1=B1;
+C2=B2;
+C3=B3;
+C4=B4;
+
+S1 = B1 * O;                                                                       %S
+E1 = B2 * O;                                                                       %E
+I1 = B3 * O;                                                                       %I
+R1 = B4 * O;                                                                       %R
+
+S = B1 * N;                                                                        %S1
+E = B2 * N;                                                                        %E1
+I = B3 * N;                                                                        %I1
+R = B4 * N;                                                                        %R1
+
+for T2 = 1:1:40                                                                   %days after outbreak
+ 
+  for idx = 1:1:T4
+    S(idx+1) = S(idx) + (B1*N - S(idx))/(T4+1) - r1*N*S(idx)*I(idx)/1000000000000 - r1*N*r2*S(idx)*E(idx)/1000000000000;
+    E(idx+1) = E(idx) + (B2*N - E(idx))/(T4+1) + r1*N*S(idx)*I(idx)/1000000000000-a*E(idx)/(T4+1) + r1*N*r2*S(idx)*E(idx)/1000000000000;
+    I(idx+1) = I(idx) + (B3*N - I(idx))/(T4+1) + a*E(idx)/(T4+1) - y*I(idx)/(T4+1);
+    R(idx+1) = R(idx) + (B4*N - R(idx))/(T4+1) + y*I(idx)/(T4+1);
+
+    S1(idx+1) = S1(idx) - (B1*N - S(idx))/(T4+1);
+    E1(idx+1) = E1(idx) - (B2*N - E(idx))/(T4+1) - a*E1(idx)/(T4+1);
+    I1(idx+1) = I1(idx) - (B3*N - I(idx))/(T4+1) + a*E1(idx)/(T4+1) - y*I1(idx)/(T4+1);
+    R1(idx+1) = R1(idx) - (B4*N - R(idx))/(T4+1) + y*I1(idx)/(T4+1);
+    Q(idx+1) =E(idx) + I(idx) + R(idx);
+
+    B1=S1(idx+1)/O;
+    B2=E1(idx+1)/O;
+    B3=I1(idx+1)/O;
+    B4=R1(idx+1)/O;
+
+    C1 = (S1(idx+1)+S(idx+1))/F;
+    C2 = (E1(idx+1)+E(idx+1))/F;
+    C3 = (I1(idx+1)+I(idx+1))/F;
+    C4 = (R1(idx+1)+R(idx+1))/F;
+    
+    if idx == T4
+    
+    B1 = (S1(T4+1)+S(T4+1))/F;
+    B2 = (E1(T4+1)+E(T4+1))/F;
+    B3 = (I1(T4+1)+I(T4+1))/F;
+    B4 = (R1(T4+1)+R(T4+1))/F;
+
+    C1 = B1;
+    C2 = B2;
+    C3 = B3;
+    C4 = B4;
+
+    S1 = B1 * O;                                                                     %S1
+    E1 = B2 * O;                                                                     %E1
+    I1 = B3 * O;                                                                     %I1
+    R1 = B4 * O;                                                                     %R1
+
+    S = B1 * N;                                                                      %S
+    E = B2 * N;                                                                      %E
+    I = B3 * N;                                                                      %I
+    R = B4 * N;                                                                      %R
+
+    end
+
+  end
+end
+U=[N;T1;r1;y;r2;C1;C2;C3;C4];
+Y=[Y U];
+end
+end
+end
+end
+end
